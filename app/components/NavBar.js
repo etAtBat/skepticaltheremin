@@ -11,8 +11,8 @@ var NavBar = React.createClass({
       <div className="main-container">
         <nav className="navbar navbar-fixed-top navbar-inverse" role="navigation" >
           <div className="col-sm-7 col-sm-offset-2">
-            <div className="container">
-            <div><DropDownList /></div>
+            <div className="container navbar-header">
+              <div><DropDownList /></div>
             </div>
           </div>
         </nav>
