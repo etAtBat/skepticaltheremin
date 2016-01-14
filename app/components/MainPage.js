@@ -16,7 +16,7 @@ var MainPage = React.createClass({
 
   render() {
     return (
-      <div class='container'>
+      <div className='container'>
         <NavBar options={this.state} getUserStory={this.getUserStory}/>
         <MapApp />
       </div>
