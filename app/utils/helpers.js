@@ -15,6 +15,27 @@ var getAllBreadCrumbs = function(username, cb) {
   });
 };
 
+
+// Sends a story List to the client
+var sendStory = function(username, storyList, cb){
+
+  console.log('HELPER',storyList);
+  // $.ajax({
+  //     url: 'to/be/decided',
+  //     dataType: 'json',
+  //     type:'PUT',
+  //     data: storyList,
+  //     success: function(response){
+
+  //     },
+  //     error: function(xhr, status, err) {
+  //       console.log(status, err.toString());
+  //     }
+  // })
+}
+
+
+
 var addBreadCrumb = function(username, breadcrumb, cb) {
   console.log(username);
   $.ajax({
@@ -89,7 +110,8 @@ var helpers = {
   getAllBreadCrumbs: getAllBreadCrumbs,
   addBreadCrumb: addBreadCrumb,
   signupUser: signupUser,
-  login: login
+  login: login,
+  sendStory: sendStory
 }
 
 module.exports = helpers;

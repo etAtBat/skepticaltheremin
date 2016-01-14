@@ -53,6 +53,12 @@ var MapApp = React.createClass({
   componentDidMount(){
   },
 
+  addNewStory(storyList, cb){
+    console.log(storyList);
+    var user = this.state.user;
+    helpers.sendStory(user, storyList, cb);
+  },
+
   // Adds a new breadCrumb to the database
   addToFavBreadCrumbs(id, lat, lng, timestamp, details, location) {
     var favorites = this.state.favorites;
@@ -67,6 +73,7 @@ var MapApp = React.createClass({
     };
     favorites.push(breadcrumb);
 
+    // Render all components with the new favorites array
     this.setState({
       favorites: favorites
     });
@@ -114,6 +121,7 @@ var MapApp = React.createClass({
           });
         }
 
+        // Passes in the exact address to the callback
         if(cb){
           cb(results[0].formatted_address); 
         }
@@ -140,18 +148,26 @@ var MapApp = React.createClass({
           {/*Once a user searches for some location on the Search Componennt our Map component state will update its coordinates based off their search Results.*/}
           {/*Everything on this components state is passed in as a property to the Map Component*/}
 
-          <Map lat={this.state.mapCoordinates.lat}
+          <Map 
+            lat={this.state.mapCoordinates.lat}
             lng={this.state.mapCoordinates.lng}
             favorites={this.state.favorites}
             onFavoriteToggle={this.toggleFavorite}
+
+            // Adding A Individual Story
             onAddToFavBcs={this.addToFavBreadCrumbs}
             searchAddress={this.searchForAddress}
             address={this.state.currentAddress} 
             center={this.state.center} 
             loginUser={this.loginUser}
-            user={this.state.user} />
+            user={this.state.user} 
+
+            addNewStory={this.addNewStory}
+          />
 
           {/*Favorites is passed in to LocationList*/}
+          {/*When the Favorites is changed it will rerun location list*/}
+
           <LocationList locations={this.state.favorites}
             activeLocationAddress={this.state.currentAddress} 
             onClick={this.searchForAddress} />
