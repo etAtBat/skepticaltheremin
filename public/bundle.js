@@ -38007,7 +38007,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { 'class': 'container' },
 	      React.createElement(NavBar, null),
 	      React.createElement(
 	        'div',
@@ -38033,32 +38033,127 @@
 	var NavBar = React.createClass({
 	  displayName: 'NavBar',
 
-	  // NavBar has two components, a button for logout and StoryNav button
-	  //    <DropDownList />
-	  // Placeholder: insert these components
+	  handleClick: function handleClick() {
+	    this.setState({ open: !this.state.open });
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return { open: false };
+	  },
+
+	  handleItemClick: function handleItemClick(item) {
+	    this.setState({
+	      open: false,
+	      itemTitle: item
+	    });
+	  },
 
 	  render: function render() {
 	    return React.createElement(
-	      'div',
-	      { className: 'main-container' },
+	      'nav',
+	      { className: 'navbar navbar-default navbar-inverse navbar-fixed-top' },
 	      React.createElement(
-	        'nav',
-	        { className: 'navbar navbar-fixed-top navbar-inverse', role: 'navigation' },
+	        'div',
+	        { className: 'container-fluid' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-sm-7 col-sm-offset-2' },
+	          { className: 'navbar-header' },
 	          React.createElement(
-	            'div',
-	            { className: 'container navbar-header' },
+	            'button',
+	            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#bs-example-navbar-collapse-1', 'aria-expanded': 'false' },
 	            React.createElement(
-	              'div',
+	              'span',
+	              { className: 'sr-only' },
+	              'Toggle navigation'
+	            ),
+	            React.createElement('span', { className: 'icon-bar' }),
+	            React.createElement('span', { className: 'icon-bar' }),
+	            React.createElement('span', { className: 'icon-bar' })
+	          ),
+	          React.createElement(
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            'StoryMap'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'collapse navbar-collapse', id: 'bs-example-navbar-collapse-1' },
+	          React.createElement(
+	            'ul',
+	            { className: 'nav navbar-nav navbar-right' },
+	            React.createElement(
+	              'li',
 	              null,
-	              React.createElement(DropDownList, null)
+	              React.createElement(
+	                'a',
+	                { href: '#' },
+	                '+ Add a Story'
+	              )
+	            ),
+	            React.createElement(
+	              'li',
+	              { className: 'dropdown' },
+	              React.createElement(
+	                'a',
+	                { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	                'View A Story',
+	                React.createElement('span', { className: 'caret' })
+	              ),
+	              React.createElement(
+	                'ul',
+	                { className: 'dropdown-menu' },
+	                React.createElement(
+	                  'li',
+	                  null,
+	                  React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    'Action'
+	                  )
+	                ),
+	                React.createElement(
+	                  'li',
+	                  null,
+	                  React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    'Another action'
+	                  )
+	                ),
+	                React.createElement(
+	                  'li',
+	                  null,
+	                  React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    'Something else here'
+	                  )
+	                ),
+	                React.createElement('li', { role: 'separator', className: 'divider' }),
+	                React.createElement(
+	                  'li',
+	                  null,
+	                  React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    'Separated link'
+	                  )
+	                )
+	              )
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'a',
+	                { href: '#' },
+	                'Logout'
+	              )
 	            )
 	          )
 	        )
-	      ),
-	      React.createElement('div', { className: 'container' })
+	      )
 	    );
 	  }
 	});
@@ -38096,8 +38191,17 @@
 
 	    return React.createElement(
 	      'div',
-	      { className: 'dropdown' },
-	      React.createElement(Button, { whenClicked: this.handleClick }),
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header' },
+	        React.createElement(Button, { whenClicked: this.handleClick }),
+	        React.createElement(
+	          'a',
+	          { 'class': 'navbar-brand', href: '#' },
+	          'StoryMap'
+	        )
+	      ),
 	      React.createElement(
 	        'ul',
 	        { className: 'dropdown-menu ' + (this.state.open ? 'show' : '') },

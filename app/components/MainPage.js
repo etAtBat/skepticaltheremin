@@ -6,7 +6,7 @@ var MainPage = React.createClass({
 
   render() {
     return (
-      <div>
+      <div class='container'>
         <NavBar />
         <div>Hello World</div>
         <MapApp />

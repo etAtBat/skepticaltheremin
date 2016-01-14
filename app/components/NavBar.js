@@ -1,25 +1,51 @@
 var React = require('react');
-var DropDownList = require('./DropDownList');
+var UserStoryList = require('./UserStoryList');
 
 var NavBar = React.createClass({
-  // NavBar has two components, a button for logout and StoryNav button
-  //    <DropDownList />
-  // Placeholder: insert these components
+
+  handleClick: function() {
+    this.setState({open: !this.state.open});
+
+  },
+
+  getInitialState: function() {
+    return { open : false };
+  },
+
+  handleItemClick: function(item) {
+    this.setState({
+      open: false,
+      itemTitle: item
+    });
+  },
 
   render() {
     return (
-      <div className="main-container">
-        <nav className="navbar navbar-fixed-top navbar-inverse" role="navigation" >
-          <div className="col-sm-7 col-sm-offset-2">
-            <div className="container navbar-header">
-              <div><DropDownList /></div>
-            </div>
+      <nav className="navbar navbar-default navbar-inverse navbar-fixed-top">
+        <div className="container-fluid">
+          <div className="navbar-header" >
+            <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span className="sr-only">Toggle navigation</span>
+              <span className="icon-bar"></span>
+              <span className="icon-bar"></span>
+              <span className="icon-bar"></span>
+            </button>
+            <a className="navbar-brand" href="#">StoryMap</a>
           </div>
-        </nav>
-        <div className="container">
-          {/*this.props.children*/}
+
+          <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul className="nav navbar-nav navbar-right">
+              <li><a href="#">+ Add a Story</a></li>
+              <li className="dropdown">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View A Story<span className="caret"></span></a>
+                {/*** Adds UserStoryList Dropdown ***/}
+                <UserStoryList />
+              </li>
+              <li><a href='#'>Logout</a></li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </nav>
     );
   }
 });
