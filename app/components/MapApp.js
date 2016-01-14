@@ -6,7 +6,7 @@ var CurrentLocation = require('./CurrentLocation');
 var LocationList = require('./LocationList');
 var SearchUser = require('./SearchUser');
 var helpers = require('../utils/helpers');
-var Signup = require('./Signup');
+// var Signup = require('./Signup'); ** REMOVED
 
 
 var MapApp = React.createClass({
@@ -113,7 +113,8 @@ var MapApp = React.createClass({
   },
 
   render(){
-    if(this.state.loggedin){
+    // ** REMOVED **
+    // if(this.state.loggedin){
       return (
 
         <div>
@@ -138,9 +139,10 @@ var MapApp = React.createClass({
         </div>
 
       );
-    } else {
-      return <Signup loginUser={this.loginUser}/>
-    }
+    // ** REMOVED **
+    // } else {
+    //   return <Signup loginUser={this.loginUser}/>
+    // }
   }
 
 });
