@@ -22,8 +22,12 @@ var DropDownList = React.createClass({
   render() {
 
     return (
-      <div className='dropdown'>
-        <Button whenClicked={this.handleClick}/>
+      <div>
+      <div className='navbar-header'>
+        <Button whenClicked={this.handleClick} />
+        <a class="navbar-brand" href='#'>StoryMap</a>
+      </div>
+
         <ul className={'dropdown-menu ' + (this.state.open ? 'show' : '')}>
           <li><a>Add Story</a></li>
           <li>
