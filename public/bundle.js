@@ -38033,7 +38033,7 @@
 	          { className: 'col-sm-7 col-sm-offset-2' },
 	          React.createElement(
 	            'div',
-	            { className: 'container' },
+	            { className: 'container navbar-header' },
 	            React.createElement(
 	              'div',
 	              null,
@@ -38056,20 +38056,100 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
+	var Button = __webpack_require__(323);
 
 	var DropDownList = React.createClass({
 	  displayName: 'DropDownList',
+
+	  handleClick: function handleClick() {
+	    this.setState({ open: !this.state.open });
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return { open: false };
+	  },
+
+	  handleItemClick: function handleItemClick(item) {
+	    this.setState({
+	      open: false,
+	      itemTitle: item
+	    });
+	  },
+
 	  render: function render() {
 
 	    return React.createElement(
 	      'div',
-	      null,
-	      'DropDownList'
+	      { className: 'dropdown' },
+	      React.createElement(Button, { whenClicked: this.handleClick }),
+	      React.createElement(
+	        'ul',
+	        { className: 'dropdown-menu ' + (this.state.open ? 'show' : '') },
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            null,
+	            'Add Story'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            null,
+	            React.createElement(
+	              'div',
+	              null,
+	              'My Stories'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { href: '/logout' },
+	            'Logout'
+	          )
+	        )
+	      )
 	    );
 	  }
 	});
 
 	module.exports = DropDownList;
+
+	//{'dropdown-menu ' + (this.state.open ? 'show' : '') }
+
+/***/ },
+/* 323 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	// define a react componenet class
+	var Button = React.createClass({
+	  displayName: "Button",
+
+	  render: function render() {
+	    return React.createElement(
+	      "button",
+	      { type: "button", className: "navbar-toggle button-default", onClick: this.props.whenClicked,
+	        "data-toggle": "collapse", "data-target": ".navbar-collapse" },
+	      React.createElement("span", { className: "icon-bar" }),
+	      React.createElement("span", { className: "icon-bar" }),
+	      React.createElement("span", { className: "icon-bar" })
+	    );
+	  }
+	});
+
+	module.exports = Button;
 
 /***/ }
 /******/ ]);
