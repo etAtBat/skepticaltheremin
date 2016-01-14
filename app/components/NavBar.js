@@ -2,9 +2,22 @@ var React = require('react');
 var DropDownList = require('./DropDownList');
 
 var NavBar = React.createClass({
-  // NavBar has two components, a button for logout and StoryNav button
-  //    <DropDownList />
-  // Placeholder: insert these components
+  
+  handleClick: function() {
+    this.setState({open: !this.state.open});
+
+  },
+
+  getInitialState: function() {
+    return { open : false };
+  },
+
+  handleItemClick: function(item) {
+    this.setState({
+      open: false,
+      itemTitle: item
+    });
+  },
 
   render() {
     return (

@@ -38033,9 +38033,20 @@
 	var NavBar = React.createClass({
 	  displayName: 'NavBar',
 
-	  // NavBar has two components, a button for logout and StoryNav button
-	  //    <DropDownList />
-	  // Placeholder: insert these components
+	  handleClick: function handleClick() {
+	    this.setState({ open: !this.state.open });
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return { open: false };
+	  },
+
+	  handleItemClick: function handleItemClick(item) {
+	    this.setState({
+	      open: false,
+	      itemTitle: item
+	    });
+	  },
 
 	  render: function render() {
 	    return React.createElement(
