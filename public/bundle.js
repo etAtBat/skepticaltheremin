@@ -24529,7 +24529,10 @@
 	    return {
 	      user: '',
 	      loggedin: false,
+	      // This gets passed to the LocationList
 	      favorites: favorites,
+	      // On initial Page load Map is centerd with Hack Reactors Coordinates
+	      // Once the user adds something on the search bar, these values will begin to change
 	      currentAddress: 'Hack Reactor',
 	      mapCoordinates: {
 	        lat: 37.7836966,
@@ -24544,13 +24547,18 @@
 	  loginUser: function loginUser(username) {
 	    console.log("logged in:", username);
 	    this.setState({ user: username, loggedin: true });
+
+	    // Makes a request to our server which grabs all the breadCrumbs according to a specific username.
 	    helpers.getAllBreadCrumbs(username, function (data) {
+	      // Once a breadCrumb is found we will LOAD ALL THE FAVORITES it to favorites state
 	      if (data) {
 	        this.setState({ favorites: data.pins });
 	      }
 	    }.bind(this));
 	  },
 	  componentDidMount: function componentDidMount() {},
+
+	  // Adds a new breadCrumb to the database
 	  addToFavBreadCrumbs: function addToFavBreadCrumbs(id, lat, lng, timestamp, details, location) {
 	    var favorites = this.state.favorites;
 	    var breadcrumb = {
@@ -24568,11 +24576,14 @@
 	      favorites: favorites
 	    });
 
+	    // ADDS THE BREADCRUMB TO OUR DATABASE
 	    helpers.addBreadCrumb(this.state.user, breadcrumb, function (data) {
 	      console.log(data);
 	    });
 	    localStorage.favorites = JSON.stringify(favorites);
 	  },
+
+	  // Whenever a user searches something from the Search Component, it will call this function
 	  searchForAddress: function searchForAddress(address, cb, recenter) {
 	    var self = this;
 	    console.log("search called", address);
@@ -24588,6 +24599,7 @@
 
 	        var latlng = results[0].geometry.location;
 
+	        // Coordinages based off the searchResults
 	        self.setState({
 	          currentAddress: results[0].formatted_address,
 	          mapCoordinates: {
@@ -24596,6 +24608,7 @@
 	          }
 	        });
 
+	        //THIS IS ONLY GIVING THE DATA TO CENTER THE MAP!. This is not acutally centering the map
 	        if (recenter) {
 	          self.setState({
 	            center: {
@@ -24612,8 +24625,6 @@
 	    });
 	  },
 	  render: function render() {
-	    // ** REMOVED **
-	    // if(this.state.loggedin){
 	    return React.createElement(
 	      'div',
 	      null,
@@ -24716,6 +24727,7 @@
 	  displayName: 'Map',
 	  getInitialState: function getInitialState() {
 	    return {
+	      // Connected to the location input
 	      location: '',
 	      breadcrumbs: [],
 	      lat: this.props.lat,
@@ -24726,9 +24738,13 @@
 	      map: null
 	    };
 	  },
+
+	  // Change event from the location input
 	  handleLocationChange: function handleLocationChange(e) {
 	    this.setState({ location: e.target.value });
 	  },
+
+	  // Grabs the comments from the comment textarea
 	  handleCommentChange: function handleCommentChange(e) {
 	    this.setState({ comment: e.target.value });
 	  },

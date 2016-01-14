@@ -4,6 +4,7 @@ var helpers = require('../utils/helpers');
 var Map = React.createClass({
   getInitialState(){
     return {
+      // Connected to the location input
       location: '',
       breadcrumbs: [],
       lat: this.props.lat,
@@ -15,10 +16,12 @@ var Map = React.createClass({
     }
   },
   
+  // Change event from the location input
   handleLocationChange(e) {
     this.setState({location: e.target.value});  
   },
-  
+ 
+  // Grabs the comments from the comment textarea 
   handleCommentChange(e) {
     this.setState({comment: e.target.value});
   },
