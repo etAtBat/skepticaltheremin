@@ -1,4 +1,5 @@
 var React = require('react');
+var Modal = require('./modal');
 var helpers = require('../utils/helpers');
 
 var Map = React.createClass({
@@ -8,7 +9,7 @@ var Map = React.createClass({
 
     return {
       // Connected to the location input
-      location: '',
+      location: this.props.address,
       storyList:[],
       storyName: '',
       breadcrumbs: [],
@@ -56,6 +57,7 @@ var Map = React.createClass({
     this.props.onAddToFavBcs(id, lat, lng, timestamp, details, infoWindow, location);
   },
 
+  // Updating the markers
   updateCurrentLocation(){
     if(this.state.previousMarker){
       this.state.previousMarker.setIcon({
@@ -80,31 +82,41 @@ var Map = React.createClass({
 
     // this.componentDidUpdate();
     var self = this;
+
+    // This is creating the map and centering our code
     var map = new GMaps({
       el: '#map',
+      zoom:13,
       lat: this.props.lat,
       lng: this.props.lng,
       styles: [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#46bcec"},{"visibility":"on"}]}]
 
     });
 
+    // This map is now attached to our state
     this.setState({map: map});
+
+    map.setCenter(this.props.lat, this.props.lng);
+
 
     //Right Click Menu
     map.setContextMenu({
       control: 'map',
       options: [{
-        title: 'Add Bread Crumb',
-        name: 'add_bread_crumb',
+        title: 'Add Pin',
+        name: 'Add Pin',
+
+        // THIS FUNCTION IS CALLED ON A RIGHT CLICK
         action: function(e) {
 
-          // WHEN THE MAP IS RIGHT CLICKED
           var addressString = e.latLng.lat().toString() + " " +  e.latLng.lng().toString();
           
           // UPDATE TO NEW LOCATION. RERENDERS THE PARENT COMPONENT WHICH THEN RERENDERS THIS COMPONENT UPDATING THE PROPS TO THE NEW RIGHT CLICKED LOCATION
           // PASSES THE LG AND LT TO SEARCHADDRESS IN MAPAPP
           // MAPAPP PASSES IT TO THIS FILE HERE AND PASSES IT TO THE LOCATION INPUT
           self.props.searchAddress(addressString, function(newLocation){
+
+            // Were setting state inside here manually causing a re-render
             self.setState({location: newLocation, comment: "Add comments here and save breadcrumb"});
           });
 
@@ -114,8 +126,7 @@ var Map = React.createClass({
           var time = Date.now();
           self.setState({lastMarkerTimeStamp: time});
           
-
-          // ADD THE CONNECTION FOR DIFFERENT MARKS HERE
+          // When clicked it will always add a marker at this location
           var marker = this.addMarker({
             lat: e.latLng.lat(),
             lng: e.latLng.lng(),
@@ -127,19 +138,13 @@ var Map = React.createClass({
               strokeColor: "green",
               scale: 5
             },
-            // infoWindow: {
-            //   content: '<p style="height:200px; width: 800px;">HTML Content </p>'
-            // },
             click: function(e) {
               self.setState({currentMarker: this});
               self.updateCurrentLocation();
-              self.matchBreadCrumb(e.timestamp);
-              // this.setMap(null);
             }
           });
           self.setState({currentMarker: marker});
           self.updateCurrentLocation();
-          // self.addFavBreadCrumb(id, e.latLng.lat(), e.latLng.lng(), Date.now(), {note: "I LOVE this place."}, {content: '<p>Dat info dohhh</p>'});
         }
       }, {
         title: 'Center here',
@@ -152,7 +157,7 @@ var Map = React.createClass({
 
     
 
-    // map.addMarkers(this.props.favorites); //no longer used
+    //map.addMarkers(this.props.favorites); //no longer used
     helpers.getAllBreadCrumbs(this.props.user, function(data){
       if(!data){
         return;
@@ -184,6 +189,12 @@ var Map = React.createClass({
   },
 
   componentDidUpdate(){
+
+    // Update child Component
+    if(this.state.location !== this.props.address){
+      this.setState({location: this.props.address});
+    }
+
     if(this.props.favorites.length !== this.state.breadcrumbs.length){
       this.setState({breadcrumbs: this.props.favorites});
       return;
@@ -193,7 +204,6 @@ var Map = React.createClass({
       // The map has already been initialized at this address.
       // Return from this method so that we don't reinitialize it
       // (and cause it to flicker).
-
       return;
     }
 
@@ -214,6 +224,30 @@ var Map = React.createClass({
     var comment = this.state.comment;
     var storyName = this.state.storyName;
 
+    if(this.state.storyList.length){
+      var storyList = this.state.storyList;
+      var prevPin = storyList[storyList.length-1];
+
+      this.state.map.drawRoute({
+        origin: [prevPin.latitude, prevPin.longitutde ],
+        destination: [lat, lng],
+        travelMode: 'driving',
+        strokeColor: '#131540',
+        strokeOpacity: 1,
+        strokeWeight: 6
+      }); 
+    }
+
+
+    // Add a Pin on the map
+    this.state.map.addMarker({
+      lat: lat ,
+      lng: lng ,
+      title: 'Lima',
+      click: function(e) {
+        alert('You clicked in this marker');
+      }
+    });
 
     
     // Prepare the object and send it to the server
@@ -270,34 +304,12 @@ var Map = React.createClass({
     return (
       <div>
 
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-      
-          <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-          
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Modal Header</h4>
-                </div>
-                <div class="modal-body">
-                  <p>Some text in the modal.</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-
-          {/* <Modal /> */}
-
         <div className="map-holder">
           <p>Loading......</p>
           <div id="map"></div>
         </div>
+
+        <Modal />
 
         <form className="form-group list-group col-xs-12 col-md-6 col-md-offset-3" >
           <label htmlFor="location">Location:</label>

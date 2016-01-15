@@ -9,6 +9,8 @@ var helpers = require('../utils/helpers');
 // var Signup = require('./Signup'); ** REMOVED
 
 
+
+
 var MapApp = React.createClass({
 
   getInitialState(){
@@ -24,17 +26,19 @@ var MapApp = React.createClass({
       favorites: favorites,
       // On initial Page load Map is centerd with Hack Reactors Coordinates
       // Once the user adds something on the search bar, these values will begin to change
-      currentAddress: 'Hack Reactor',
+      currentAddress: '',
       mapCoordinates: {
-        lat: 37.7836966,
-        lng: -122.4089664
+        lat:'',
+        lng:''
       },
       center: {
-        lat: 37.7836966,
-        lng: -122.4089664
+        lat: -12.043333,
+        lng: -77.028333,
       }
     };
   },
+
+
 
   loginUser(username){
     console.log("logged in:", username);
@@ -51,6 +55,40 @@ var MapApp = React.createClass({
   },
 
   componentDidMount(){
+
+
+
+    GMaps.geolocate.call(this, {
+      success: function(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        this.setState({
+          mapCoordinates: {lat: lat , lng: lng } 
+        });
+
+        var addressString = this.state.mapCoordinates.lat + " " +  this.state.mapCoordinates.lng;
+
+        this.searchForAddress(addressString, function(currentAddress){
+          this.setState({"currentAddress": currentAddress});
+          this.setState({'center': {lat: lat, lng: lng } });
+          this.forceUpdate(); 
+        }.bind(this), null);
+
+
+      }.bind(this),
+
+      error: function(error) {
+        console.log('Geolocation failed: ' + error.message);
+      },
+      not_supported: function() {
+        console.log("Your browser does not support geolocation");
+      },
+      always: function() {
+        console.log("Done!");
+      }
+    });
+
+
   },
 
   addNewStory(storyList, cb){
@@ -89,6 +127,7 @@ var MapApp = React.createClass({
   // Whenever a user searches something from the Search Component, it will call this function
   searchForAddress(address, cb, recenter){
     var self = this;
+
     console.log("search called", address);
 
     // We will use GMaps' geocode functionality,
@@ -99,7 +138,6 @@ var MapApp = React.createClass({
       callback: function(results, status) {
 
         if (status !== 'OK') return;
-
         var latlng = results[0].geometry.location;
 
         // Coordinages based off the searchResults
@@ -122,6 +160,7 @@ var MapApp = React.createClass({
         }
 
         // Passes in the exact address to the callback
+        // Passing a callback allows us to rerender the component in which the callback was initiated in
         if(cb){
           cb(results[0].formatted_address); 
         }
@@ -167,10 +206,10 @@ var MapApp = React.createClass({
 
           {/*Favorites is passed in to LocationList*/}
           {/*When the Favorites is changed it will rerun location list*/}
-
           <LocationList locations={this.state.favorites}
             activeLocationAddress={this.state.currentAddress} 
-            onClick={this.searchForAddress} />
+            onClick={this.searchForAddress} 
+          />
 
         </div>
 

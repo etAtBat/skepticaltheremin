@@ -4,6 +4,9 @@
   margin: 20px auto;
 }*/
 
+
+
+
 h1 {
   margin-bottom: 20px;
 }
@@ -75,6 +78,24 @@ h1 {
   font-size: 20px;
   color: #969FA8;
 }
+
+.modal-header {
+  background-color: #3498DB;
+  color:white;
+}
+
+/*.modal-backdrop {
+  height: 100%;
+  z-index: 100;
+}
+
+
+.modal-container {
+  position: relative;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}*/
 
 #map {
   max-width: 500px;
