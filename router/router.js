@@ -1,13 +1,10 @@
 //define requirements
 var controller = require('../controllers');
+var config = require('../config.js');
+var request = require('request');
+var session = require('express-session');
 
 //////////////////////////////PLACEHOLDER FOR HELPER FUNCTION INTENDED TO HELP CLEAN UP REPEATED CODE BELOW/////////////////////
-
-// var helperFuncToConnectRouterToControllers = function(req, res){
-//   return function(controller, action){
-
-//   };
-// }
 
 
 //the function below leverages the db controllers in order to process the different http requests from the client side;
@@ -15,14 +12,64 @@ var controller = require('../controllers');
 module.exports = function(app){
 
 ///////////////////////////////////////////////////USER-RELATED REQUEST HANDLERS////////////////////////////////////////////////
-
+ 
   ////////LOGIN-RELATED HANDLERS////////////
-  
-  //signup
+
+  //define facebook parameters to be used for oauth;
+  var facebook_APP_ID = process.env.APP_ID || config.facebook.APP_ID;
+  var facebook_CALLBACK_URI = process.env.CALLBACK_URI || config.facebook.CALLBACK_URI;
+  var facebook_APP_SECRET = process.env.APP_SECRET || config.facebook.APP_SECRET;
 
   //signin
+  app.get('/', function (req, res) {
+   //checking if a user already has a session 
+   if (!req.session.user) {
+     //if they do not, redirect them to the login page
+     console.log('nothing for you!')
+     res.redirect('login.html');
+   }
+   //otherwise direct them to the home page;
+   res.redirect('index.html');
+  });
+
+  //oauth p1 (sending users to facebook for authentication)
+  app.get('/auth/facebook', function (req, res) { 
+   res.redirect('https://www.facebook.com/dialog/oauth?client_id=' + facebook_APP_ID  + '&redirect_uri=' + facebook_CALLBACK_URI);
+  });
+
+  //oauth p2 (facebook redirecting users back to our app after they've been authenticated)
+  app.get('/facebook/callback/', function (req, res) {
+   //this is a code provided by facebook verifying that user has a fb account and is logged in
+   var code = req._parsedUrl.search.substring(6, req._parsedUrl.search.length);
+   //define endpoint where app asks fb for user token
+   var newEndpoint = 'https://graph.facebook.com/v2.3/oauth/access_token?client_id='+facebook_APP_ID+'&redirect_uri='+facebook_CALLBACK_URI+'&client_secret='+facebook_APP_SECRET+'&code='+code;
+   
+   //request token from fb @ endpoint
+   request(newEndpoint, function (error, response, body) {
+     //data coming from fb request
+     var jsonBody = JSON.parse(body);
+     //data body contains a token
+     var myToken = jsonBody.access_token;
+     //create route by which we can get userInfo from fb using token
+     var toFindUser = 'https://graph.facebook.com/me?fields=name&access_token=' + myToken;
+     //use token to get user's fb info
+     request(toFindUser, function (error, response, body) {
+       var userObj = JSON.parse(body);
+       var name = userObj.name;
+       //create session for user
+       req.session.user = name;
+       //once we have info and have created session, redirect user to app homepage;
+       res.redirect('/');
+     })
+   })
+  });
 
   //logout
+  app.get('/logout', function(req, res){
+    req.session.destroy(function(){
+      res.redirect('/');
+    });
+  });
  
 
   ////////ADD/REMOVE USER HANDLERS//////////   
