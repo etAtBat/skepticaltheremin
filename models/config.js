@@ -18,3 +18,4 @@ db.connect();
 // var query = db.query('CREATE TABLE pins(id SERIAL PRIMARY KEY, userid integer REFERENCES users(id), storyid integer REFERENCES stories(id), categoryid integer REFERENCES categories(id), location varchar(200),latitude real, longitude real, comment varchar(200),time integer)');
 
 //export connection so that different tables/schemas can use it
+module.exports = db;
