@@ -24232,8 +24232,18 @@
 	};
 
 	var addPin = function addPin(username, pin, cb) {
-	  alert("I am now Persisting the Data");
-	  console.log(pin);
+
+	  $.ajax({
+	    url: '/api/pins/' + storyID,
+	    type: "POST",
+	    data: pin,
+	    success: function success(response) {
+	      console.log(response);
+	    },
+	    error: function error(xhr, status, err) {
+	      console.log(status, err.toString());
+	    }
+	  });
 	};
 
 	var addBreadCrumb = function addBreadCrumb(username, breadcrumb, cb) {
@@ -24870,8 +24880,8 @@
 	    this.lastLat = this.props.center.lat;
 	    this.lastLng = this.props.center.lng;
 	  },
-	  gatherAllStories: function gatherAllStories() {
-	    alert("I am in gatherAllStories");
+	  persistPin: function persistPin() {
+
 	    // Get the lat and lng from MAP Apps SEARCH COMPONENT
 	    var lat = this.props.lat;
 	    var lng = this.props.lng;
@@ -24880,9 +24890,40 @@
 	    var comment = this.state.comment;
 	    var storyName = this.state.storyName;
 
-	    if (this.state.storyList.length) {
+	    // Prepare the object and send it to the server
+	    // LAT AND LNG CAN BE EITHER FROM THE SEARCH COMPONENET OR FROM THE RIGHT CLICK FEATRUE FROM GMAPS. THIS IS BECAUSE SEARCHADRESS IS INVOKED
+	    var pinObject = {
+	      latitude: lat,
+	      longitutde: lng,
+	      time: timestamp,
+	      // The address for the pin
+	      location: location,
+	      // Comment relating to that pin
+	      comment: comment,
+	      // The stories name
+	      name: storyName
+	    };
+
+	    // Updating the state with the the pins that are making up a story
+	    this.setState({ "storyList": this.state.storyList.push(pinObject) && this.state.storyList });
+
+	    // Closing the modal
+	    $("#myModal").modal('hide');
+
+	    // Adding a Pin on the Current Story
+	    this.state.map.addMarker({
+	      lat: lat,
+	      lng: lng,
+	      title: location,
+	      click: function click(e) {
+	        alert('You clicked in this marker');
+	      }
+	    });
+
+	    if (this.state.storyList.length > 1) {
 	      var storyList = this.state.storyList;
-	      var prevPin = storyList[storyList.length - 1];
+
+	      var prevPin = storyList[storyList.length - 2];
 
 	      this.state.map.drawRoute({
 	        origin: [prevPin.latitude, prevPin.longitutde],
@@ -24894,39 +24935,8 @@
 	      });
 	    }
 
-	    // Add a Pin on the map
-	    this.state.map.addMarker({
-	      lat: lat,
-	      lng: lng,
-	      title: 'Lima',
-	      click: function click(e) {
-	        alert('You clicked in this marker');
-	      }
-	    });
-
-	    // Prepare the object and send it to the server
-	    // LAT AND LNG CAN BE EITHER FROM THE SEARCH COMPONENET OR FROM THE RIGHT CLICK FEATRUE FROM GMAPS. THIS IS BECAUSE SEARCHADRESS IS INVOKED
-	    var pinObject = {
-	      latitude: lat,
-	      longitutde: lng,
-	      time: timestamp,
-
-	      // The address for the pin
-	      location: location,
-
-	      // Comment relating to that pin
-	      comment: comment,
-
-	      // The stories name
-	      name: storyName
-	    };
-
 	    // Adding a story to our database
-	    this.props.addStoryPin(pinObject);
-
-	    // Updating the state with the the pins that are making up a story
-	    this.setState({ "storyList": this.state.storyList.push(pinObject) && this.state.storyList });
-	    this.setState({ location: '', comment: '' });
+	    //this.props.addStoryPin(pinObject);
 	  },
 	  submitStory: function submitStory() {
 
@@ -25013,7 +25023,7 @@
 	            React.createElement(
 	              'div',
 	              { className: 'modal-footer' },
-	              React.createElement('input', { type: 'button', onClick: this.gatherAllStories, className: 'btn btn-success', value: 'Add New Story' }),
+	              React.createElement('input', { type: 'button', onClick: this.persistPin, className: 'btn btn-success', value: 'Add New Story' }),
 	              React.createElement('input', { type: 'button', onClick: this.submitStory, className: 'btn btn-primary', value: 'Sumbit Story' })
 	            )
 	          )
@@ -38051,7 +38061,7 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var UserStoryListItem = __webpack_require__(327);
+	var UserStoryListItem = __webpack_require__(320);
 
 	var NavBar = React.createClass({
 	  displayName: 'NavBar',
@@ -38154,14 +38164,7 @@
 	module.exports = NavBar;
 
 /***/ },
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

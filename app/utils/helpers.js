@@ -42,6 +42,7 @@ var addPin = function(username, pin, cb){
     data: pin,
     success: function(response){
       console.log(response);
+      
     },
     error: function(xhr, status, err) {
       console.log(status, err.toString());
