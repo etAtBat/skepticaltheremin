@@ -1,126 +1,186 @@
+//define requirements
+var controller = require('../controllers');
 
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-// var path = require('path');
+//////////////////////////////PLACEHOLDER FOR HELPER FUNCTION INTENDED TO HELP CLEAN UP REPEATED CODE BELOW/////////////////////
 
-var router = express.Router();
-var userController = require('../controllers/userControllers.js');
-//*Requirerd by server.js*
+// var helperFuncToConnectRouterToControllers = function(req, res){
+//   return function(controller, action){
 
-console.log('using router...')
+//   };
+// }
 
-//////////////////
-//users 
-//////////////////
 
-//get all users. not usually useful
-router.route('/users')
-  .get(function (req, res) {
-    console.log('user get')
-    userController.getAll(function(err, person){
-      if (err) {
-        return res.json({err: err})
-      }
-      res.json(person)
-    });
-  });
+//the function below leverages the db controllers in order to process the different http requests from the client side;
+//it is exported and called from the server.js file
+module.exports = function(app){
 
-//create user
-router.route('/users')
-  .post(function (req, res) {
-    //example:
-    console.log("post to /users", req.body.username,req.body.password);
-    var newuser = {
-      username: req.body.username,
-      password: req.body.password,
-      pins: []
-    }
+///////////////////////////////////////////////////USER-RELATED REQUEST HANDLERS////////////////////////////////////////////////
 
-    userController.addUser(newuser, function(err, pins){
+  ////////LOGIN-RELATED HANDLERS////////////
+  
+  //signup
+
+  //signin
+
+  //logout
+ 
+
+  ////////ADD/REMOVE USER HANDLERS//////////   
+  //add user**
+  //NOTE: will need to handle case where username is already in database
+  app.post('/api/users', function (req, res) {
+    console.log("trying to add new user");
+    //define value to be added to the database
+    var username = [req.body.username];
+  
+    //call addUser method in user controller
+    controller.user.createUser(username, function(err, data){
        if (err) {
-        console.log(err);
-        return res.json({err: err});
+        return console.error(err);
       }
-      res.status(201).json(pins);
+      res.sendStatus(201);
+      console.log(username, " successfully added to the db");
     });
   });
 
-//delete user
-router.route('/users')
-  .delete(function (req, res) {
-    userController.removeUser({username: req.body.username}, function(err, user){
+  //remove user 
+  app.delete('/api/users', function (req, res) {
+    console.log("trying to delete existing user");
+    //define value to be removed from database 
+    var username = [req.body.username];
+    //call removeUser method in user controller
+    controller.user.removeUser(username, function(err, data){
        if (err) {
-        return res.json({err: err});
+        return console.error(err);
       }
-      res.json(user);
+      res.status(200).send('goodbye ' + username + " we will miss you");
+      console.log(username, " succesfully deleted from db");
+    });
+  }); 
+
+  ////////ADD/REMOVE FRIEND HANDLERS///////////
+
+  //add friend
+
+  //remove friend
+
+
+///////////////////////////////////////////////////STORY-RELATED REQUEST HANDLERS////////////////////////////////////////////////
+
+  //create story**
+  app.post('/api/story', function (req, res) {
+    console.log("trying to create a story");
+    var storyData = [req.body.userid, req.body.category, req.body.storyName];
+    controller.story.createStory(storyData, function(err, data){
+       if (err) {
+        return console.error(err);
+      }
+      res.sendStatus(201);
+      console.log("successfully enabling user to create a story");
+    });
+  }); 
+
+
+  //update story**
+  // app.put('/api/story/:id', function (req, res) {
+  //   console.log("trying to update a story");
+  //   var pinData = req.body.map(function(pinObject){
+  //     return [Number(req.params.id), pinObject.categoryid, pinObject.location, pinObject.latitude, pinObject.longitude, pinObject.comment, pinObject.time];
+  //   });
+  //   controller.story.updateStory(pinData, function(err, data){
+  //      if (err) {
+  //       return console.error(err);
+  //     }
+  //     res.sendStatus(200);
+  //     console.log("succesfully enabling user to edit story");
+  //   });
+  // }); 
+
+  //view a story (personal or a friend's)
+  app.get('/api/story/:storyid', function (req, res) {
+    console.log("trying to view ONE story");
+    var storyID = [Number(req.params.storyid)];
+    controller.pin.viewStory(storyID, function(err, data){
+       if (err) {
+        return console.error(err);
+      }
+      //turns data into json;
+      res.json(data.rows);
+      console.log("successfully enabling user to view ONE story");
+    });
+  }); 
+
+
+  //view all stories (personal or friend's)
+  app.get('/api/story/allstories/:userid', function (req, res) {
+    console.log("trying to view ALL stories");
+    var userID = [Number(req.params.userid)];
+    controller.pin.viewStories(userID, function(err, data){
+       if (err) {
+        return console.error(err);
+      }
+      res.json(data);
+      console.log("successfully enabling user to view ALL stories");
     });
   });
 
-//////////////////
-//pins
-//////////////////
 
-//get array of pins for single user
-router.route('/maps/:username')
-  .get(function (req, res) {
-    var username = req.params.username;
+  //remove story
+  // app.delete('/api/story/:storyid', function (req, res) {
+  //   console.log("trying to delete an existing story");
+  //   var storyID = [Number(req.params.storyid)];
+  //   controller.user.removeStory(username, function(err, data){
+  //      if (err) {
+  //       return console.error(err);
+  //     }
+  //     res.end();
+  //     console.log("successfully deleted story from db");
+  //   });
+  // });
 
-    userController.findOne({username: username}, function(err, person){
-      if (err) {
-        return res.json({err: err})
+///////////////////////////////////////////////////PIN-RELATED REQUEST HANDLERS////////////////////////////////////////////////
+
+  //add pin
+  app.post('/api/pin/:storyid', function (req, res) {
+    console.log("adding a pin");
+    var pinData = [req.body.userid, Number(req.params.storyid), req.body.location, req.body.latitude, req.body.longitude, req.body.comment, req.body.time];
+    controller.pin.createPin(pinData, function(err, data){
+       if (err) {
+        return console.error(err);
       }
-      //sends back entire person object currently. refactor to only the pins array
-      res.json(person)
+      res.sendStatus(201);
+      console.log("successfully added a pin");
     });
   });
 
-//insert new pin in pins array on user obj
-router.route('/maps/:username')
-  .put(function (req, res) {
-    var username = req.params.username;
-    var newpin = req.body;
-
-    if(JSON.stringify(newpin) !== JSON.stringify({})){  
-      userController.updatePins({username: username}, newpin, function(err, pins){
-         if (err) {
-          return res.json({err: err});
-        }
-        res.json(pins)
-
-      });
-    } else {
-      res.json({})
-    }
+  //edit pin
+  // app.put('/api/pin/:storyid', function (req, res) {
+  //   console.log("adding a pin");
+  //   var pinData = [req.body.userid, Number(req.params.storyid), req.body.location, req.body.latitude, req.body.longitude, req.body.comment, req.body.time];
+  //   controller.pin.createPin(pinData, function(err, data){
+  //      if (err) {
+  //       return console.error(err);
+  //     }
+  //     res.sendStatus(201);
+  //     console.log("successfully added a pin");
+  //   });
+  // });
 
 
-  });
-
-// delete last pin from array
-// router.route('/maps/:username')
-//   .delete(function (req, res) {
-//     var username = req.params.username;
-//     userController.removeLastPin({userName: username}, function(err, pins){
-//        if (err) {
-//         return res.json({err: err});
-//       }
-//       res.json(pins);
-//     });
-//   });
-
-//delete a spcific pin
-router.route('/maps/:username')
-  .delete(function (req, res) {
-    var username = req.params.username;
-    var pinId = req.body._id;
-    userController.deletePin({username: username}, pinId, function(err, doc) {
-      if (err) {
-        return res.json({err: err});
+  //remove pin
+  app.delete('/api/pin/:id', function (req, res) {
+    console.log("deleting a pin");
+    var pinData = [req.body.username, req.body.category, req.body.storyName];
+    controller.story.viewStories(storyData, function(err, data){
+       if (err) {
+        return console.error(err);
       }
-      res.json(doc);
+      res.sendStatus(200);
+      console.log("successfully deleted pin");
     });
   });
 
 
+  };
 
-module.exports = router;
+
