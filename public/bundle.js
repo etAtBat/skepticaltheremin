@@ -38021,16 +38021,22 @@
 
 	var MainPage = React.createClass({
 	  displayName: 'MainPage',
+
+	  getInitialState: function getInitialState() {
+	    // makes a get request to server user story data
+	    var state = /*GET request to server sending user array of objects [{}, {}, {}]*/{ storyNames: ['Hello', 'World'] };
+	    return state;
+	  },
+
+	  getUserStory: function getUserStory(storyName) {
+	    console.log(storyName);
+	  },
+
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { 'class': 'container' },
-	      React.createElement(NavBar, null),
-	      React.createElement(
-	        'div',
-	        null,
-	        'Hello World'
-	      ),
+	      { className: 'container' },
+	      React.createElement(NavBar, { options: this.state, getUserStory: this.getUserStory }),
 	      React.createElement(MapApp, null)
 	    );
 	  }
@@ -38045,27 +38051,33 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var UserStoryList = __webpack_require__(322);
+	var UserStoryListItem = __webpack_require__(327);
 
 	var NavBar = React.createClass({
 	  displayName: 'NavBar',
 
-	  handleClick: function handleClick() {
-	    this.setState({ open: !this.state.open });
-	  },
+	  // handleClick: function() {
+	  //   this.setState({open: !this.state.open});
 
-	  getInitialState: function getInitialState() {
-	    return { open: false };
-	  },
+	  // },
 
-	  handleItemClick: function handleItemClick(item) {
-	    this.setState({
-	      open: false,
-	      itemTitle: item
-	    });
-	  },
+	  // getInitialState: function() {
+	  //   return { open : false };
+	  // },
+
+	  // handleItemClick: function(item) {
+	  //   this.setState({
+	  //     open: false,
+	  //     itemTitle: item
+	  //   });
+	  // },
 
 	  render: function render() {
+
+	    var storyList = this.props.options.storyNames.map(function (storyName) {
+	      return React.createElement(UserStoryListItem, { story: storyName, storyClick: this.props.getUserStory });
+	    }.bind(this));
+
 	    return React.createElement(
 	      'nav',
 	      { className: 'navbar navbar-default navbar-inverse navbar-fixed-top' },
@@ -38117,7 +38129,11 @@
 	                'View A Story',
 	                React.createElement('span', { className: 'caret' })
 	              ),
-	              React.createElement(UserStoryList, null)
+	              React.createElement(
+	                'ul',
+	                { className: 'dropdown-menu' },
+	                storyList
+	              )
 	            ),
 	            React.createElement(
 	              'li',
@@ -38139,97 +38155,39 @@
 
 /***/ },
 /* 320 */,
-/* 321 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	// define a react componenet class
-	var Button = React.createClass({
-	  displayName: "Button",
-
-	  render: function render() {
-	    return React.createElement(
-	      "button",
-	      { type: "button", className: "navbar-toggle button-default", onClick: this.props.whenClicked,
-	        "data-toggle": "collapse", "data-target": ".navbar-collapse" },
-	      React.createElement("span", { className: "icon-bar" }),
-	      React.createElement("span", { className: "icon-bar" }),
-	      React.createElement("span", { className: "icon-bar" })
-	    );
-	  }
-	});
-
-	module.exports = Button;
-
-/***/ },
-/* 322 */
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Button = __webpack_require__(321);
 
-	// This is a dropdown list populated with all user stories
-	var DropDownList = React.createClass({
-	  displayName: 'DropDownList',
-
+	var UserStoryListItem = React.createClass({
+	  displayName: 'UserStoryListItem',
 	  handleClick: function handleClick() {
-	    this.setState({ open: !this.state.open });
+	    this.props.storyClick(this.props.story);
 	  },
-
-	  getInitialState: function getInitialState() {
-	    return { open: false };
-	  },
-
-	  handleItemClick: function handleItemClick(item) {
-	    this.setState({
-	      open: false,
-	      itemTitle: item
-	    });
-	  },
-
 	  render: function render() {
 
 	    return React.createElement(
-	      'ul',
-	      { className: 'dropdown-menu' },
+	      'li',
+	      null,
 	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#' },
-	          'Hello'
-	        )
+	        'a',
+	        { onClick: this.handleClick },
+	        this.props.story
 	      )
 	    );
 	  }
 	});
 
-	module.exports = DropDownList;
-
-	//{'dropdown-menu ' + (this.state.open ? 'show' : '') }
-
-	// <div>
-	// <div className='navbar-header'>
-	//   <Button whenClicked={this.handleClick} />
-	//   <a class="navbar-brand" href='#'>StoryMap</a>
-	// </div>
-
-	//   <ul className={'dropdown-menu ' + (this.state.open ? 'show' : '')}>
-	//     <li><a>Add Story</a></li>
-	//     <li>
-	//       <a>
-	//         <div>My Stories</div>
-	//       </a>
-	//     </li>
-	//     <li><a href='/logout'>Logout</a></li>
-	//   </ul>
-	// </div>
+	module.exports = UserStoryListItem;
 
 /***/ }
 /******/ ]);
