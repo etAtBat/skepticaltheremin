@@ -70,7 +70,7 @@ module.exports = function(app){
   //create story**
   app.post('/api/story', function (req, res) {
     console.log("trying to create a story");
-    var storyData = [req.body.username, req.body.category, req.body.storyName];
+    var storyData = [req.body.userid, req.body.category, req.body.storyName];
     controller.story.createStory(storyData, function(err, data){
        if (err) {
         return console.error(err);

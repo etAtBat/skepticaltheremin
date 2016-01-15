@@ -3,9 +3,7 @@ var db = require('../models/config.js');
 
 module.exports = {
   createStory: function(params, callback){
-    var queryString = "INSERT into stories(userid, categoryid, name) \
-               VALUES((SELECT id FROM users WHERE username = $1),\
-               (SELECT id FROM categories WHERE name = $2), $3)";
+    var queryString = "INSERT into stories(userid, categoryid, name) VALUES($1, $2, $3)";
 
     db.query(queryString, params, function(err, results){
       callback(err, results);
@@ -27,4 +25,4 @@ module.exports = {
       callback(err, results);
     });
   }
-}
+};
