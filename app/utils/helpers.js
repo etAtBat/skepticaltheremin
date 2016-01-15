@@ -15,6 +15,19 @@ var getAllBreadCrumbs = function(username, cb) {
   });
 };
 
+var getAllStories = function(userID, callback) {
+  $.ajax({
+    url: '/api/story/allstories/' + userID,
+    type: 'GET',
+    success: function(response) {
+      callback(response);
+    },
+    error: function(xhr, status, err) {
+      console.log(status, err.toString());
+    }
+  });
+};
+
 
 // Sends a story List to the client
 var sendStory = function(username, storyList, cb){
@@ -130,7 +143,8 @@ var helpers = {
   signupUser: signupUser,
   login: login,
   sendStory: sendStory,
-  addPin: addPin
+  addPin: addPin,
+  getAllStories: getAllStories
 }
 
 module.exports = helpers;
