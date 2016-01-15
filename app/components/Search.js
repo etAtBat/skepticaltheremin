@@ -32,7 +32,7 @@ var Search = React.createClass({
               <input type="text" className="form-control" id="address" placeholder="Find a location..." 
               value={this.state.value} onChange={this.handleChange} />
               <span className="input-group-btn">
-                <span className="glyphicon glyphicon-search" aria-hidden="true"></span>
+                <span data-toggle="modal" data-target="#myModal" className="glyphicon glyphicon-search" aria-hidden="true"></span>
               </span>
             </div>
           </div>
