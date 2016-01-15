@@ -24231,6 +24231,11 @@
 	  // })
 	};
 
+	var addPin = function addPin(username, pin, cb) {
+	  alert("I am now Persisting the Data");
+	  console.log(pin);
+	};
+
 	var addBreadCrumb = function addBreadCrumb(username, breadcrumb, cb) {
 	  console.log(username);
 	  $.ajax({
@@ -24306,7 +24311,8 @@
 	  addBreadCrumb: addBreadCrumb,
 	  signupUser: signupUser,
 	  login: login,
-	  sendStory: sendStory
+	  sendStory: sendStory,
+	  addPin: addPin
 	};
 
 	module.exports = helpers;
@@ -24481,9 +24487,12 @@
 	    });
 	  },
 	  addNewStory: function addNewStory(storyList, cb) {
-	    console.log(storyList);
 	    var user = this.state.user;
 	    helpers.sendStory(user, storyList, cb);
+	  },
+	  addStoryPin: function addStoryPin(pin, cb) {
+	    alert("I am in the MapApp");
+	    helpers.addPin(this.state.user, pin, cb);
 	  },
 
 	  // Adds a new breadCrumb to the database
@@ -24569,8 +24578,8 @@
 	        lat: this.state.mapCoordinates.lat,
 	        lng: this.state.mapCoordinates.lng,
 	        favorites: this.state.favorites,
-	        onFavoriteToggle: this.toggleFavorite
-
+	        onFavoriteToggle: this.toggleFavorite,
+	        addStoryPin: this.addStoryPin
 	        // Adding A Individual Story
 	        , onAddToFavBcs: this.addToFavBreadCrumbs,
 	        searchAddress: this.searchForAddress,
@@ -24862,6 +24871,7 @@
 	    this.lastLng = this.props.center.lng;
 	  },
 	  gatherAllStories: function gatherAllStories() {
+	    alert("I am in gatherAllStories");
 	    // Get the lat and lng from MAP Apps SEARCH COMPONENT
 	    var lat = this.props.lat;
 	    var lng = this.props.lng;
@@ -24911,7 +24921,8 @@
 	      name: storyName
 	    };
 
-	    // Update the pin on the map
+	    // Adding a story to our database
+	    this.props.addStoryPin(pinObject);
 
 	    // Updating the state with the the pins that are making up a story
 	    this.setState({ "storyList": this.state.storyList.push(pinObject) && this.state.storyList });
@@ -24920,26 +24931,9 @@
 	  submitStory: function submitStory() {
 
 	    // Call the StoryList function
-	    this.props.addNewStory(this.state.storyList);
+	    //this.props.addNewStory(this.state.storyList);
 	    this.setState({ location: '', comment: '', "storyName": '', "storyList": [] });
 	  },
-
-	  // handleSubmit(e) {
-
-	  //   e.preventDefault();
-
-	  //   if(this.state.location === '' || this.state.comment === ''){
-	  //     // Bring a pop up of some sort
-	  //     return;
-	  //   }
-
-	  //   var id = this.props.favorites.length;
-	  //   var timestamp = this.state.lastMarkerTimeStamp;
-	  //   this.addFavBreadCrumb(id, this.props.lat, this.props.lng, timestamp, {note: this.state.comment}, this.state.location);
-	  //   // this.state.currentMarker.setMap(null);
-
-	  // },
-
 	  render: function render() {
 
 	    return React.createElement(
@@ -24982,24 +24976,38 @@
 	              'div',
 	              { className: 'modal-body' },
 	              React.createElement(
-	                'div',
-	                { 'class': 'form-group' },
+	                'form',
+	                { className: 'form-group list-group' },
 	                React.createElement(
-	                  'label',
-	                  { htmlFor: 'location' },
-	                  'Location:'
+	                  'div',
+	                  { 'class': 'form-group' },
+	                  React.createElement(
+	                    'label',
+	                    { htmlFor: 'location' },
+	                    'Location:'
+	                  ),
+	                  React.createElement('input', { type: 'text', className: 'form-control', id: 'location', onChange: this.handleLocationChange, value: this.state.location, placeholder: 'Location' })
 	                ),
-	                React.createElement('input', { type: 'text', className: 'form-control', id: 'location', onChange: this.handleLocationChange, value: this.state.location, placeholder: 'Location' })
-	              ),
-	              React.createElement(
-	                'div',
-	                { 'class': 'form-group' },
 	                React.createElement(
-	                  'label',
-	                  { htmlFor: 'comment' },
-	                  'Comment:'
+	                  'div',
+	                  { 'class': 'form-group' },
+	                  React.createElement(
+	                    'label',
+	                    { htmlFor: 'storyName' },
+	                    'Story-Title:'
+	                  ),
+	                  React.createElement('input', { type: 'text', disabled: this.state.storyList.length > 0 ? true : false, className: 'form-control', id: 'storyName', onChange: this.handleStoryChange, value: this.state.storyName, placeholder: 'Late Night Adventures' })
 	                ),
-	                React.createElement('textarea', { value: this.state.comment, onChange: this.handleCommentChange, className: 'form-control', rows: '10', id: 'comment' })
+	                React.createElement(
+	                  'div',
+	                  { 'class': 'form-group' },
+	                  React.createElement(
+	                    'label',
+	                    { htmlFor: 'comment' },
+	                    'Comment:'
+	                  ),
+	                  React.createElement('textarea', { value: this.state.comment, onChange: this.handleCommentChange, className: 'form-control', rows: '10', id: 'comment' })
+	                )
 	              )
 	            ),
 	            React.createElement(
@@ -25009,34 +25017,6 @@
 	              React.createElement('input', { type: 'button', onClick: this.submitStory, className: 'btn btn-primary', value: 'Sumbit Story' })
 	            )
 	          )
-	        )
-	      ),
-	      React.createElement(
-	        'form',
-	        { className: 'form-group list-group col-xs-12 col-md-6 col-md-offset-3' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'location' },
-	          'Location:'
-	        ),
-	        React.createElement('input', { type: 'text', className: 'form-control', id: 'location', onChange: this.handleLocationChange, value: this.state.location, placeholder: 'Location' }),
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'storyName' },
-	          'Story-Title:'
-	        ),
-	        React.createElement('input', { type: 'text', disabled: this.state.storyList.length > 0 ? true : false, className: 'form-control', id: 'storyName', onChange: this.handleStoryChange, value: this.state.storyName, placeholder: 'Late Night Adventures' }),
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'comment' },
-	          'Comment:'
-	        ),
-	        React.createElement('textarea', { value: this.state.comment, onChange: this.handleCommentChange, className: 'form-control', rows: '10', id: 'comment' }),
-	        React.createElement(
-	          'div',
-	          null,
-	          React.createElement('input', { type: 'button', onClick: this.gatherAllStories, className: 'btn btn-success', value: 'Add New Story' }),
-	          React.createElement('input', { type: 'button', onClick: this.submitStory, className: 'btn btn-primary', value: 'Sumbit Story' })
 	        )
 	      )
 	    );

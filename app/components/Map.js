@@ -216,6 +216,7 @@ var Map = React.createClass({
 
 
   gatherAllStories(){
+    alert("I am in gatherAllStories");
     // Get the lat and lng from MAP Apps SEARCH COMPONENT
     var lat = this.props.lat;
     var lng = this.props.lng;
@@ -267,7 +268,9 @@ var Map = React.createClass({
       name: storyName
     };
 
-    // Update the pin on the map
+    
+    // Adding a story to our database
+    this.props.addStoryPin(pinObject);
 
     // Updating the state with the the pins that are making up a story
     this.setState({"storyList": this.state.storyList.push(pinObject) && this.state.storyList });
@@ -277,27 +280,10 @@ var Map = React.createClass({
   submitStory(){
 
     // Call the StoryList function
-    this.props.addNewStory(this.state.storyList);
+    //this.props.addNewStory(this.state.storyList);
     this.setState({location: '', comment: '', "storyName": '', "storyList": []});
   },
 
-
-  // handleSubmit(e) {
-
-  //   e.preventDefault();
-
-  //   if(this.state.location === '' || this.state.comment === ''){
-  //     // Bring a pop up of some sort
-  //     return;
-  //   }
-    
-  //   var id = this.props.favorites.length;
-  //   var timestamp = this.state.lastMarkerTimeStamp;
-  //   this.addFavBreadCrumb(id, this.props.lat, this.props.lng, timestamp, {note: this.state.comment}, this.state.location);
-  //   // this.state.currentMarker.setMap(null);
-
-
-  // },
 
   render(){
 
@@ -309,7 +295,7 @@ var Map = React.createClass({
           <div id="map"></div>
         </div>
 
-        { /* Create Separate Component if time */ }
+        { /* Create Separate Component for this Model */ }
         <div id="myModal" className="modal fade" role="dialog">
           <div className="modal-dialog">
 
@@ -321,50 +307,41 @@ var Map = React.createClass({
               </div>
 
               <div className="modal-body">
-                <div class="form-group">
-                  <label htmlFor="location">Location:</label>
-                  <input type="text" className="form-control" id="location" onChange={this.handleLocationChange} value={this.state.location} placeholder="Location" />
-                </div>
 
-                <div class="form-group">
-                  {/*Comment Box*/}
-                  <label htmlFor="comment">Comment:</label>
-                  <textarea value={this.state.comment} onChange={this.handleCommentChange} className="form-control" rows="10" id="comment"></textarea>
-                </div>
+                <form className="form-group list-group" >
+                  
+                  <div class="form-group">
+                    {/*Location */}
+                    <label htmlFor="location">Location:</label>
+                    <input type="text" className="form-control" id="location" onChange={this.handleLocationChange} value={this.state.location} placeholder="Location" />
+                  </div>
+
+                  <div class="form-group">
+                    {/*Story Title*/}
+                    <label htmlFor="storyName"  >Story-Title:</label>
+                    <input type="text" disabled={ this.state.storyList.length > 0 ? true : false } className="form-control" id="storyName" onChange={this.handleStoryChange} value={this.state.storyName} placeholder="Late Night Adventures" />
+                  </div>
+
+                  <div class="form-group">
+                    {/*Comment Box*/}
+                    <label htmlFor="comment">Comment:</label>
+                    <textarea value={this.state.comment} onChange={this.handleCommentChange} className="form-control" rows="10" id="comment"></textarea>
+                  </div>
+                </form>
+
               </div>
 
               <div className="modal-footer">
                 <input type='button' onClick={this.gatherAllStories} className='btn btn-success' value='Add New Story'/>
                 <input type="button" onClick={this.submitStory} className="btn btn-primary" value="Sumbit Story" />
               </div>
-              
+
+
             </div>
 
           </div>
         </div>
 
-
-        <form className="form-group list-group col-xs-12 col-md-6 col-md-offset-3" >
-          <label htmlFor="location">Location:</label>
-          <input type="text" className="form-control" id="location" onChange={this.handleLocationChange} value={this.state.location} placeholder="Location" />
-
-
-          {/*Story Title*/}
-          <label htmlFor="storyName"  >Story-Title:</label>
-
-          <input type="text" disabled={ this.state.storyList.length > 0 ? true : false } className="form-control" id="storyName" onChange={this.handleStoryChange} value={this.state.storyName} placeholder="Late Night Adventures" />
-
-
-          
-          {/*Comment Box*/}
-          <label htmlFor="comment">Comment:</label>
-          <textarea value={this.state.comment} onChange={this.handleCommentChange} className="form-control" rows="10" id="comment"></textarea>
-
-          <div>
-            <input type='button' onClick={this.gatherAllStories} className='btn btn-success' value='Add New Story'/>
-            <input type="button" onClick={this.submitStory} className="btn btn-primary" value="Sumbit Story" />
-          </div>
-        </form>
 
       </div>
     );

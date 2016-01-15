@@ -92,9 +92,13 @@ var MapApp = React.createClass({
   },
 
   addNewStory(storyList, cb){
-    console.log(storyList);
     var user = this.state.user;
     helpers.sendStory(user, storyList, cb);
+  },
+
+  addStoryPin(pin, cb){
+    alert("I am in the MapApp");
+    helpers.addPin(this.state.user, pin, cb);
   },
 
   // Adds a new breadCrumb to the database
@@ -192,7 +196,7 @@ var MapApp = React.createClass({
             lng={this.state.mapCoordinates.lng}
             favorites={this.state.favorites}
             onFavoriteToggle={this.toggleFavorite}
-
+            addStoryPin={this.addStoryPin}
             // Adding A Individual Story
             onAddToFavBcs={this.addToFavBreadCrumbs}
             searchAddress={this.searchForAddress}

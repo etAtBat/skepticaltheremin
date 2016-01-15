@@ -34,6 +34,11 @@ var sendStory = function(username, storyList, cb){
   // })
 }
 
+var addPin = function(username, pin, cb){
+  alert("I am now Persisting the Data");
+  console.log(pin);
+};
+
 
 
 var addBreadCrumb = function(username, breadcrumb, cb) {
@@ -111,7 +116,8 @@ var helpers = {
   addBreadCrumb: addBreadCrumb,
   signupUser: signupUser,
   login: login,
-  sendStory: sendStory
+  sendStory: sendStory,
+  addPin: addPin
 }
 
 module.exports = helpers;
