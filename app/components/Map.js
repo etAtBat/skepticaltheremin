@@ -215,8 +215,8 @@ var Map = React.createClass({
 
 
 
-  gatherAllStories(){
-    alert("I am in gatherAllStories");
+  persistPin(){
+
     // Get the lat and lng from MAP Apps SEARCH COMPONENT
     var lat = this.props.lat;
     var lng = this.props.lng;
@@ -225,9 +225,42 @@ var Map = React.createClass({
     var comment = this.state.comment;
     var storyName = this.state.storyName;
 
-    if(this.state.storyList.length){
+
+    // Prepare the object and send it to the server
+    // LAT AND LNG CAN BE EITHER FROM THE SEARCH COMPONENET OR FROM THE RIGHT CLICK FEATRUE FROM GMAPS. THIS IS BECAUSE SEARCHADRESS IS INVOKED
+    var pinObject = {
+      latitude: lat,
+      longitutde: lng,
+      time: timestamp,
+      // The address for the pin
+      location: location,
+      // Comment relating to that pin
+      comment: comment,
+      // The stories name
+      name: storyName
+    };
+
+    // Updating the state with the the pins that are making up a story
+    this.setState({"storyList": this.state.storyList.push(pinObject) && this.state.storyList });
+    
+    // Closing the modal
+    $("#myModal").modal('hide');
+
+    // Adding a Pin on the Current Story
+    this.state.map.addMarker({
+      lat: lat ,
+      lng: lng ,
+      title: location,
+      click: function(e) {
+        alert('You clicked in this marker');
+      }
+    });
+
+
+    if(this.state.storyList.length > 1){
       var storyList = this.state.storyList;
-      var prevPin = storyList[storyList.length-1];
+
+      var prevPin = storyList[storyList.length-2];
 
       this.state.map.drawRoute({
         origin: [prevPin.latitude, prevPin.longitutde ],
@@ -238,43 +271,11 @@ var Map = React.createClass({
         strokeWeight: 6
       }); 
     }
-
-
-    // Add a Pin on the map
-    this.state.map.addMarker({
-      lat: lat ,
-      lng: lng ,
-      title: 'Lima',
-      click: function(e) {
-        alert('You clicked in this marker');
-      }
-    });
-
     
-    // Prepare the object and send it to the server
-    // LAT AND LNG CAN BE EITHER FROM THE SEARCH COMPONENET OR FROM THE RIGHT CLICK FEATRUE FROM GMAPS. THIS IS BECAUSE SEARCHADRESS IS INVOKED
-    var pinObject = {
-      latitude: lat,
-      longitutde: lng,
-      time: timestamp,
 
-      // The address for the pin
-      location: location,
-
-      // Comment relating to that pin
-      comment: comment,
-
-      // The stories name
-      name: storyName
-    };
-
-    
     // Adding a story to our database
-    this.props.addStoryPin(pinObject);
+    //this.props.addStoryPin(pinObject);
 
-    // Updating the state with the the pins that are making up a story
-    this.setState({"storyList": this.state.storyList.push(pinObject) && this.state.storyList });
-    this.setState({location: '', comment: ''});
   },
 
   submitStory(){
@@ -332,7 +333,7 @@ var Map = React.createClass({
               </div>
 
               <div className="modal-footer">
-                <input type='button' onClick={this.gatherAllStories} className='btn btn-success' value='Add New Story'/>
+                <input type='button' onClick={this.persistPin} className='btn btn-success' value='Add New Story'/>
                 <input type="button" onClick={this.submitStory} className="btn btn-primary" value="Sumbit Story" />
               </div>
 

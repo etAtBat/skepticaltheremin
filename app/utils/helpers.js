@@ -35,8 +35,20 @@ var sendStory = function(username, storyList, cb){
 }
 
 var addPin = function(username, pin, cb){
-  alert("I am now Persisting the Data");
-  console.log(pin);
+  
+  $.ajax({
+    url: `/api/pins/${storyID}`,
+    type: "POST",
+    data: pin,
+    success: function(response){
+      console.log(response);
+    },
+    error: function(xhr, status, err) {
+      console.log(status, err.toString());
+    }
+  });
+
+
 };
 
 
