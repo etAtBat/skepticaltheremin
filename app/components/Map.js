@@ -1,5 +1,5 @@
 var React = require('react');
-var Modal = require('./modal');
+// var Modal = require('./modal');
 var helpers = require('../utils/helpers');
 
 var Map = React.createClass({
@@ -309,7 +309,40 @@ var Map = React.createClass({
           <div id="map"></div>
         </div>
 
-        <Modal />
+        { /* Create Separate Component if time */ }
+        <div id="myModal" className="modal fade" role="dialog">
+          <div className="modal-dialog">
+
+            <div className="modal-content">
+
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                <h4 className="modal-title">Modal Header</h4>
+              </div>
+
+              <div className="modal-body">
+                <div class="form-group">
+                  <label htmlFor="location">Location:</label>
+                  <input type="text" className="form-control" id="location" onChange={this.handleLocationChange} value={this.state.location} placeholder="Location" />
+                </div>
+
+                <div class="form-group">
+                  {/*Comment Box*/}
+                  <label htmlFor="comment">Comment:</label>
+                  <textarea value={this.state.comment} onChange={this.handleCommentChange} className="form-control" rows="10" id="comment"></textarea>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <input type='button' onClick={this.gatherAllStories} className='btn btn-success' value='Add New Story'/>
+                <input type="button" onClick={this.submitStory} className="btn btn-primary" value="Sumbit Story" />
+              </div>
+              
+            </div>
+
+          </div>
+        </div>
+
 
         <form className="form-group list-group col-xs-12 col-md-6 col-md-offset-3" >
           <label htmlFor="location">Location:</label>

@@ -24659,7 +24659,7 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Modal = __webpack_require__(326);
+	// var Modal = require('./modal');
 	var helpers = __webpack_require__(210);
 
 	var Map = React.createClass({
@@ -24955,7 +24955,62 @@
 	        ),
 	        React.createElement('div', { id: 'map' })
 	      ),
-	      React.createElement(Modal, null),
+	      React.createElement(
+	        'div',
+	        { id: 'myModal', className: 'modal fade', role: 'dialog' },
+	        React.createElement(
+	          'div',
+	          { className: 'modal-dialog' },
+	          React.createElement(
+	            'div',
+	            { className: 'modal-content' },
+	            React.createElement(
+	              'div',
+	              { className: 'modal-header' },
+	              React.createElement(
+	                'button',
+	                { type: 'button', className: 'close', 'data-dismiss': 'modal' },
+	                '×'
+	              ),
+	              React.createElement(
+	                'h4',
+	                { className: 'modal-title' },
+	                'Modal Header'
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'modal-body' },
+	              React.createElement(
+	                'div',
+	                { 'class': 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'location' },
+	                  'Location:'
+	                ),
+	                React.createElement('input', { type: 'text', className: 'form-control', id: 'location', onChange: this.handleLocationChange, value: this.state.location, placeholder: 'Location' })
+	              ),
+	              React.createElement(
+	                'div',
+	                { 'class': 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'comment' },
+	                  'Comment:'
+	                ),
+	                React.createElement('textarea', { value: this.state.comment, onChange: this.handleCommentChange, className: 'form-control', rows: '10', id: 'comment' })
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'modal-footer' },
+	              React.createElement('input', { type: 'button', onClick: this.gatherAllStories, className: 'btn btn-success', value: 'Add New Story' }),
+	              React.createElement('input', { type: 'button', onClick: this.submitStory, className: 'btn btn-primary', value: 'Sumbit Story' })
+	            )
+	          )
+	        )
+	      ),
 	      React.createElement(
 	        'form',
 	        { className: 'form-group list-group col-xs-12 col-md-6 col-md-offset-3' },
@@ -38195,86 +38250,6 @@
 	//     <li><a href='/logout'>Logout</a></li>
 	//   </ul>
 	// </div>
-
-/***/ },
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	module.exports = React.createClass({
-	  displayName: "exports",
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      null,
-	      React.createElement(
-	        "div",
-	        { id: "myModal", className: "modal fade", role: "dialog" },
-	        React.createElement(
-	          "div",
-	          { className: "modal-dialog" },
-	          React.createElement(
-	            "div",
-	            { className: "modal-content" },
-	            React.createElement(
-	              "div",
-	              { className: "modal-header" },
-	              React.createElement(
-	                "button",
-	                { type: "button", className: "close", "data-dismiss": "modal" },
-	                "×"
-	              ),
-	              React.createElement(
-	                "h4",
-	                { className: "modal-title" },
-	                "Modal Header"
-	              )
-	            ),
-	            React.createElement(
-	              "div",
-	              { className: "modal-body" },
-	              React.createElement(
-	                "div",
-	                { "class": "form-group" },
-	                React.createElement(
-	                  "label",
-	                  { "for": "location" },
-	                  "Location:"
-	                ),
-	                React.createElement("input", { type: "text", className: "form-control", id: "location" })
-	              ),
-	              React.createElement(
-	                "div",
-	                { "class": "form-group" },
-	                React.createElement(
-	                  "label",
-	                  { "for": "comment" },
-	                  "Comment:"
-	                ),
-	                React.createElement("textarea", { className: "form-control", rows: "5", id: "comment" })
-	              )
-	            ),
-	            React.createElement(
-	              "div",
-	              { className: "modal-footer" },
-	              React.createElement(
-	                "button",
-	                { type: "button", className: "btn btn-primary", "data-dismiss": "modal" },
-	                "Close"
-	              )
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
 
 /***/ }
 /******/ ]);

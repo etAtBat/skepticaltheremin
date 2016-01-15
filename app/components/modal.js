@@ -2,6 +2,25 @@ var React = require('react');
 
 module.exports = React.createClass({
 
+  getInitialState(){
+
+    var favorites = [];
+
+    return {
+      // Connected to the location input
+      location: this.props.address,
+      storyList:[],
+      storyName: '',
+      breadcrumbs: [],
+      lat: this.props.lat,
+      lng: this.props.lng,
+      previousMarker: null,
+      currentMarker: null,
+      lastMarkerTimeStamp: null,
+      map: null
+    }
+  },
+
   render() {
     return (
       <div>
