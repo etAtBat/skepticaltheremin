@@ -1,25 +1,32 @@
 var React = require('react');
-var UserStoryList = require('./UserStoryList');
+var UserStoryListItem = require('./UserStoryListItem');
 
 var NavBar = React.createClass({
 
-  handleClick: function() {
-    this.setState({open: !this.state.open});
+  // handleClick: function() {
+  //   this.setState({open: !this.state.open});
 
-  },
+  // },
 
-  getInitialState: function() {
-    return { open : false };
-  },
+  // getInitialState: function() {
+  //   return { open : false };
+  // },
 
-  handleItemClick: function(item) {
-    this.setState({
-      open: false,
-      itemTitle: item
-    });
-  },
+  // handleItemClick: function(item) {
+  //   this.setState({
+  //     open: false,
+  //     itemTitle: item
+  //   });
+  // },
+
+
 
   render() {
+
+    var storyList = this.props.options.storyNames.map(function(storyName) {
+      return <UserStoryListItem story={storyName} storyClick={this.props.getUserStory}/>
+    }.bind(this));
+
     return (
       <nav className="navbar navbar-default navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
@@ -39,7 +46,9 @@ var NavBar = React.createClass({
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View A Story<span className="caret"></span></a>
                 {/*** Adds UserStoryList Dropdown ***/}
-                <UserStoryList />
+                <ul className="dropdown-menu">
+                  {storyList}
+                </ul>
               </li>
               <li><a href='#'>Logout</a></li>
             </ul>

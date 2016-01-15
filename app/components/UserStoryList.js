@@ -1,5 +1,5 @@
 var React = require('react');
-var Button = require('./Button');
+var UserStoryListItem = require('./UserStoryListItem');
 
 // This is a dropdown list populated with all user stories
 var DropDownList = React.createClass({
