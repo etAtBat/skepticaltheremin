@@ -4,10 +4,18 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var db = require('./models/config');
 var app = express();
+var request = require('request');
+var session = require('express-session');
 
 
 //apply middleware
 //NOTE: will need to change this route once we redo the file structure
+app.use(session({
+ // Secret hashes the session
+ secret:'sssssshhhhhhhh',
+ saveUninitialized: true,
+ resave: true
+}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
     
@@ -15,7 +23,7 @@ app.use(bodyParser.json());
 //NOTE: will need to change this route once we redo the file structure
 require('./router/router.js')(app);
 
-
+//UNDERSTAND THIS LATER...
 app.use(express.static(path.join(__dirname, "/public")));
 
 //set up ports
