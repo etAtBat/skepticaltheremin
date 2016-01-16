@@ -23,9 +23,14 @@ var NavBar = React.createClass({
 
   render() {
 
-    var storyList = this.props.options.storyNames.map(function(storyName) {
-      return <UserStoryListItem story={storyName} storyClick={this.props.getUserStory}/>
-    }.bind(this));
+    var storyList;
+    if (this.props.options.storyNames) {
+      storyList = this.props.options.storyNames.map(function(storyName) {
+        return <UserStoryListItem story={storyName.name} storyid={storyName.id} storyClick={this.props.getUserStory}/>
+      }.bind(this));      
+    } else {
+      storyList = [];
+    }
 
     return (
       <nav className="navbar navbar-default navbar-inverse navbar-fixed-top">

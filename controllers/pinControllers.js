@@ -33,7 +33,7 @@ module.exports = {
   viewStories: function(params, callback){
      var storyData = {}; 
      //set up queries for story and corresponding pin
-     var storyNameQueryString = "SELECT name FROM stories WHERE userid=$1";
+     var storyNameQueryString = "SELECT id, name FROM stories WHERE userid=$1";
      var pinQueryString = "SELECT * FROM pins WHERE userid=$1";
      //handle query for story name
      db.query(storyNameQueryString, params, function(err, results){
