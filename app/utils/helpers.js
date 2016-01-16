@@ -15,11 +15,25 @@ var getAllBreadCrumbs = function(username, cb) {
   });
 };
 
+var getSingleStory = function(storyID, callback) {
+  $.ajax({
+    url: '/api/story/' + storyID,
+    type: 'GET',
+    success: function(data) {
+      callback(data);
+    },
+    error: function(xhr, status, err) {
+      console.log(status, err.toString());
+    }
+  });
+};
+
 var getAllStories = function(userID, callback) {
   $.ajax({
     url: '/api/story/allstories/' + userID,
     type: 'GET',
     success: function(response) {
+      console.log(response);
       callback(response);
     },
     error: function(xhr, status, err) {
@@ -144,7 +158,8 @@ var helpers = {
   login: login,
   sendStory: sendStory,
   addPin: addPin,
-  getAllStories: getAllStories
+  getAllStories: getAllStories,
+  getSingleStory: getSingleStory
 }
 
 module.exports = helpers;

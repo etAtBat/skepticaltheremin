@@ -26,7 +26,7 @@ var NavBar = React.createClass({
     var storyList;
     if (this.props.options.storyNames) {
       storyList = this.props.options.storyNames.map(function(storyName) {
-        return <UserStoryListItem story={storyName} storyClick={this.props.getUserStory}/>
+        return <UserStoryListItem story={storyName.name} storyid={storyName.id} storyClick={this.props.getUserStory}/>
       }.bind(this));      
     } else {
       storyList = [];

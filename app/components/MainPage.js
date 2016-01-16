@@ -7,19 +7,20 @@ var MainPage = React.createClass({
   getInitialState: function() {
     // makes a get request to server user story data
     // var state = GET request to server sending user array of objects [{}, {}, {}] { storyNames:['Hello', 'World'] };
-    return {userid : 1};
+    return {userid : 2};
   },
 
   componentDidMount: function() {
     helpers.getAllStories(this.state.userid, function(data) {
       if (this.isMounted()) {
-        var storyArray = data.storyName.map(function(storyObj) {
-          console.log(storyObj);
-          return storyObj.name;
-        });
+        // var storyArray = data.storyName.map(function(storyObj) {
+        //   console.log(storyObj);
+        //   return storyObj.name;
+        // });
 
         this.setState({
-          storyNames: storyArray
+          storyNames: data.storyName,
+          storyPins: data.storyPins
           }
         );
       }
@@ -27,8 +28,14 @@ var MainPage = React.createClass({
     }.bind(this));
   },
 
-  getUserStory: function(storyName) {
-    console.log(storyName);
+  getUserStory: function(storyID) {
+    helpers.getSingleStory(storyID, function(data) {
+      console.log(data);
+
+      this.setState({
+        storyPins: data
+      }, function() {console.log(this.state);});
+    }.bind(this));
   },
 
 
@@ -36,7 +43,7 @@ var MainPage = React.createClass({
     return (
       <div className='container'>
         <NavBar options={this.state} getUserStory={this.getUserStory}/>
-        <MapApp />
+        <MapApp storyPins={this.state.storyPins}/>
       </div>
     );
   }

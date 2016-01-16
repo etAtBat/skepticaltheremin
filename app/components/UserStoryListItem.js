@@ -3,7 +3,7 @@ var React = require('react');
 var UserStoryListItem = React.createClass({
 
   handleClick() {
-    this.props.storyClick(this.props.story);
+    this.props.storyClick(this.props.storyid);
   },
 
   render() {
